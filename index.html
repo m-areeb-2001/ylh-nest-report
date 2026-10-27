@@ -201,7 +201,7 @@
 <footer>
   <div class="wrap">
     Muhammad Areeb · M.S. thesis, Kennesaw State University, Marietta campus<br>
-    Map © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © CARTO, imagery © Esri.
+    Map tiles and imagery © <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a> and partners; geocoding © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.
   </div>
 </footer>
 
@@ -243,9 +243,10 @@ for (const [c, hot] of CITIES) {
 
 /* ---- map ---- */
 const map = L.map("map", {scrollWheelZoom: false}).setView(KSU_MARIETTA, 11);
-/* CARTO basemap (free, no key, works from file:// too) + Esri satellite for finding the exact tree */
-const streets = L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
-  maxZoom: 20, subdomains: "abcd", attribution: "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> &copy; <a href='https://carto.com/attributions'>CARTO</a>"
+/* Esri street + satellite tiles: free with attribution, no key, and served to pages opened from
+   file:// as well as from GitHub Pages (OpenStreetMap's own server refuses file:// pages, CARTO wants a key) */
+const streets = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
+  maxZoom: 19, attribution: "Tiles &copy; Esri &mdash; Esri, HERE, Garmin, USGS, NGA, OpenStreetMap contributors"
 }).addTo(map);
 const satellite = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
   maxZoom: 19, attribution: "Imagery &copy; Esri, Maxar, Earthstar Geographics"

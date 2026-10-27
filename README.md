@@ -8,6 +8,8 @@ for the thesis. Yellow/black theme. One HTML file, no build step, no API keys.
 - `nest_photo.jpg`  hero photo (crop of our own Skydio frame S1017235). Replace with any square-ish photo.
 - `apps_script.gs`  the receiver: Google Sheet row + Drive photo + email to mareeb@students.kennesaw.edu.
 
+Live at https://m-areeb-2001.github.io/ylh-nest-report/ (GitHub Pages, branch main, folder /). Every push to main redeploys in about a minute.
+
 ## Run locally
 Double-clicking `index.html` works for the layout, but the address search is more reliable from a
 tiny local server (browsers treat `file://` pages as origin `null`):
@@ -25,8 +27,9 @@ Until `ENDPOINT` in index.html is filled in, the page runs in **local test mode*
 3. Host the folder anywhere static: GitHub Pages, Netlify drop, or KSU web space.
 
 ## Map
-Leaflet 1.9.4 + CARTO street tiles + Esri satellite tiles + Nominatim geocoding. All free, no key.
-(OpenStreetMap's own tile server returns 403 for pages opened from file://, which is why CARTO is used.)
+Leaflet 1.9.4 + Esri street and satellite tiles + Nominatim geocoding. All free, no key.
+(OpenStreetMap's own tile server returns 403 for pages opened from file://, and CARTO now wants an API key
+when served from a real domain, which is why Esri tiles are used.)
 Nominatim's policy is max 1 request per second and a real referrer; a low-traffic form is fine.
 If the site ever gets heavy traffic, switch tiles/geocoding to a keyed provider (MapTiler, Geoapify).
 
