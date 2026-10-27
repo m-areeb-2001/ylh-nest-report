@@ -75,7 +75,10 @@
   .hp{position:absolute;left:-9999px;opacity:0;height:0;width:0}
   .privacy{font-size:.85rem;color:var(--muted);margin-top:14px}
 
-  footer{background:var(--black);color:#cfcfcf;padding:26px 0 110px;font-size:.9rem}
+  /* black footer: same height as the yellow contact bar, text centred both ways, sits right above the bar */
+  footer{background:var(--black);color:#cfcfcf;font-size:.9rem;min-height:var(--barh,60px);margin-bottom:var(--barh,60px);
+    display:flex;align-items:center;justify-content:center;text-align:center;padding:8px 0}
+  footer .wrap{width:100%}
   footer a{color:var(--yellow)}
 
   .contactbar{position:fixed;left:0;right:0;bottom:0;z-index:1000;background:var(--yellow);border-top:3px solid var(--black);
@@ -200,8 +203,7 @@
 
 <footer>
   <div class="wrap">
-    Muhammad Areeb · M.S. thesis, Kennesaw State University, Marietta campus<br>
-    Map tiles and imagery © <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a> and partners; geocoding © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.
+    Muhammad Areeb · M.S. thesis, Kennesaw State University, Marietta campus
   </div>
 </footer>
 
@@ -235,6 +237,9 @@ const CITIES = [
 /* ================================================================== */
 
 const $ = id => document.getElementById(id);
+const syncBar = () => { const b = document.querySelector(".contactbar");
+  if (b) document.documentElement.style.setProperty("--barh", b.offsetHeight + "px"); };
+syncBar(); addEventListener("resize", syncBar); addEventListener("load", syncBar);
 const chips = $("cities");
 for (const [c, hot] of CITIES) {
   const s = document.createElement("span");
