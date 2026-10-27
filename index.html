@@ -95,7 +95,7 @@
     <div>
       <span class="tag">KSU graduate research · citizen reports</span>
       <h1>Seen a <em>yellow-legged hornet</em> nest? Tell us where.</h1>
-      <p>I am Muhammad Areeb, a master's student at Kennesaw State University (Marietta campus). For my thesis I am building a drone that finds yellow-legged hornet nests from the air with normal and thermal cameras and AI, so that they can be removed safely. To train and test it I need real nests near Marietta, Kennesaw and Atlanta. Your lead helps directly.</p>
+      <p>I am Muhammad Areeb, a master's student at Kennesaw State University (Marietta campus). For my thesis I am building a drone that finds yellow-legged hornet nests from the air with RGB and Thermal cameras and AI, so that they can be removed safely. To train and test it I need real nests near Marietta, Kennesaw and Atlanta. Your lead helps directly.</p>
       <a class="cta" href="#report">Report a nest (2 minutes)</a>
     </div>
     <div>
@@ -112,7 +112,7 @@
     <div class="cards">
       <div class="card"><h3>1. You report a nest</h3><p>Address or map pin, and a photo if it is safe to take one. Name and contact details are optional but let me follow up.</p></div>
       <div class="card"><h3>2. I get in touch first</h3><p>If the site fits the study I will contact you before anything happens. No one visits or flies without your permission.</p></div>
-      <div class="card"><h3>3. A short drone survey</h3><p>A few minutes of photographs from the air (normal and thermal). The images train and test the detector. Nothing is sprayed and the nest is not touched.</p></div>
+      <div class="card"><h3>3. A short drone survey</h3><p>A few minutes of photographs from the air (RGB and Thermal). The images train and test the detector. Nothing is sprayed and the nest is not touched.</p></div>
     </div>
     <p class="note"><b>Please also report every sighting to the Georgia Department of Agriculture</b>, which handles removal:
       <a href="https://agr.georgia.gov/yellow-legged-hornet" target="_blank" rel="noopener">agr.georgia.gov/yellow-legged-hornet</a>.
@@ -219,7 +219,7 @@
    ENDPOINT: paste the Google Apps Script "Web app" URL here after deploying
    apps_script.gs (see README). Leave it empty to run in LOCAL TEST MODE,
    where the report is shown on the page instead of being sent anywhere.    */
-const ENDPOINT = "";
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbzbO6p_ZElMRxk6qnc9N6QEyngsp6Be78H8cAEHcNS0PcYXgNNdfYN2sUDGbcC8i_Vg/exec";
 const KSU_MARIETTA = [33.9393, -84.5198];      // map starts here
 const MAX_PHOTO_PX = 1600;                      // photos are shrunk before upload
 

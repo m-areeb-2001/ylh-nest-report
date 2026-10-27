@@ -9,6 +9,8 @@ for the thesis. Yellow/black theme. One HTML file, no build step, no API keys.
 - `apps_script.gs`  the receiver: Google Sheet row + Drive photo + email to mareeb@students.kennesaw.edu.
 
 Live at https://m-areeb-2001.github.io/ylh-nest-report/ (GitHub Pages, branch main, folder /). Every push to main redeploys in about a minute.
+Receiver deployed 27 Oct 2026 from the Google account ak6253160@gmail.com (sheet "YLH nest reports", Drive folder "YLH nest photos");
+notifications go to mareeb@students.kennesaw.edu.
 
 ## Run locally
 Double-clicking `index.html` works for the layout, but the address search is more reliable from a
