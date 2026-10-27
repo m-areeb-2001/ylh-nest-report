@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Report a Yellow-Legged Hornet Nest</title>
+<meta name="description" content="Help a Kennesaw State University graduate research project by reporting yellow-legged hornet nests around metro Atlanta.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"
+      integrity="sha512-Zcn6bjR/8RZbLEpLIeOwNtzREBAJnUKESxces60Mpoj+2okopSAcSUIUOseddDm0cxnGQzxIR7vJgsLZbdLE3w==" crossorigin="anonymous" referrerpolicy="no-referrer">
+<style>
+  :root{
+    --yellow:#F5C400; --yellow-dark:#D9A800; --black:#121212; --ink:#1a1a1a;
+    --paper:#FFFDF5; --muted:#5a5a5a; --line:#e6e0c8; --ok:#1e7f3a; --bad:#b3261e;
+  }
+  *{box-sizing:border-box;min-width:0}
+  img,pre{max-width:100%}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--paper);line-height:1.5}
+  a{color:inherit}
+  .wrap{max-width:900px;margin:0 auto;padding:0 16px}
+
+  header{background:var(--black);color:#fff;border-bottom:8px solid var(--yellow)}
+  header .wrap{padding:48px 16px 40px;display:grid;gap:28px;grid-template-columns:1fr;align-items:center}
+  @media(min-width:720px){header .wrap{grid-template-columns:1.4fr 1fr}}
+  .tag{display:inline-block;background:var(--yellow);color:var(--black);font-weight:700;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:4px;margin-bottom:14px}
+  h1{font-size:clamp(1.8rem,4.5vw,2.8rem);line-height:1.15;margin:0 0 14px}
+  h1 em{font-style:normal;color:var(--yellow)}
+  header p{margin:0 0 18px;color:#d8d8d8;font-size:1.05rem}
+  .cta{display:inline-block;background:var(--yellow);color:var(--black);font-weight:700;text-decoration:none;padding:14px 22px;border-radius:8px;border:2px solid var(--yellow)}
+  .cta:hover{background:var(--yellow-dark);border-color:var(--yellow-dark)}
+  .hero-photo{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;border:4px solid var(--yellow);display:block}
+  .cap{font-size:.8rem;color:#bdbdbd;margin:8px 0 0;text-align:center}
+
+  section{padding:44px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:1.5rem;margin:0 0 6px;padding-left:14px;border-left:6px solid var(--yellow)}
+  .lead{color:var(--muted);margin:0 0 20px;padding-left:20px}
+  .cards{display:grid;gap:14px;grid-template-columns:1fr}
+  @media(min-width:640px){.cards{grid-template-columns:repeat(3,1fr)}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px}
+  .card h3{margin:0 0 6px;font-size:1rem}
+  .card p{margin:0;font-size:.95rem;color:#333}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}
+  .chip{background:#fff;border:2px solid var(--black);border-radius:999px;padding:6px 12px;font-size:.92rem;font-weight:600}
+  .chip.hot{background:var(--yellow)}
+  .note{font-size:.9rem;color:var(--muted);margin-top:12px}
+
+  form{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;margin-top:10px;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+  .field{margin-bottom:18px}
+  label{display:block;font-weight:700;margin-bottom:6px}
+  label small{font-weight:400;color:var(--muted)}
+  .req{color:var(--bad)}
+  input[type=text],input[type=email],input[type=tel],input[type=date],textarea{
+    width:100%;padding:12px;border:2px solid #cfc9b0;border-radius:8px;font:inherit;background:#fff}
+  input:focus,textarea:focus{outline:none;border-color:var(--yellow-dark);box-shadow:0 0 0 3px rgba(245,196,0,.35)}
+  textarea{min-height:84px;resize:vertical}
+  .row{display:grid;gap:14px;grid-template-columns:1fr}
+  @media(min-width:640px){.row{grid-template-columns:1fr 1fr}}
+  .file{border:2px dashed #cfc9b0;border-radius:8px;padding:14px;background:#fffdf0}
+  .file input{width:100%}
+  .preview{display:none;margin-top:10px;max-height:220px;border-radius:8px;border:1px solid var(--line)}
+  .addr{display:flex;gap:8px;flex-wrap:wrap}
+  .addr input{flex:1 1 200px;min-width:0}
+  .btn{background:var(--black);color:#fff;border:2px solid var(--black);border-radius:8px;padding:12px 16px;font:inherit;font-weight:700;cursor:pointer;white-space:nowrap}
+  .btn:hover{background:#000}
+  .btn.ghost{background:#fff;color:var(--black)}
+  #map{height:360px;border-radius:10px;border:2px solid var(--black);margin-top:10px;z-index:0}
+  .coords{font-size:.85rem;color:var(--muted);margin-top:6px}
+  .submit{width:100%;background:var(--yellow);color:var(--black);border:2px solid var(--yellow);border-radius:10px;padding:16px;font:inherit;font-size:1.1rem;font-weight:800;cursor:pointer;margin-top:8px}
+  .submit:hover{background:var(--yellow-dark);border-color:var(--yellow-dark)}
+  .submit:disabled{opacity:.6;cursor:wait}
+  .msg{display:none;margin-top:14px;padding:14px;border-radius:8px;font-weight:600}
+  .msg.ok{display:block;background:#e9f7ee;color:var(--ok);border:1px solid #bfe3cb}
+  .msg.bad{display:block;background:#fdeceb;color:var(--bad);border:1px solid #f2c1bd}
+  .hp{position:absolute;left:-9999px;opacity:0;height:0;width:0}
+  .privacy{font-size:.85rem;color:var(--muted);margin-top:14px}
+
+  footer{background:var(--black);color:#cfcfcf;padding:26px 0 110px;font-size:.9rem}
+  footer a{color:var(--yellow)}
+
+  .contactbar{position:fixed;left:0;right:0;bottom:0;z-index:1000;background:var(--yellow);border-top:3px solid var(--black);
+    display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;justify-content:center;padding:10px 16px;
+    padding-bottom:calc(10px + env(safe-area-inset-bottom));box-shadow:0 -4px 14px rgba(0,0,0,.18)}
+  .contactbar .who{font-weight:800;color:var(--black);margin-right:6px}
+  .cb{display:inline-block;background:var(--black);color:#fff;text-decoration:none;font-weight:700;font-size:.92rem;
+    padding:8px 12px;border-radius:999px;white-space:nowrap}
+  .cb:hover{background:#000;text-decoration:underline}
+  @media(max-width:640px){.contactbar .who{width:100%;text-align:center;margin:0}.cb{font-size:.85rem;padding:7px 10px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div>
+      <span class="tag">KSU graduate research · citizen reports</span>
+      <h1>Seen a <em>yellow-legged hornet</em> nest? Tell us where.</h1>
+      <p>I am Muhammad Areeb, a master's student at Kennesaw State University (Marietta campus). For my thesis I am building a drone that finds yellow-legged hornet nests from the air with normal and thermal cameras and AI, so that they can be removed safely. To train and test it I need real nests near Marietta, Kennesaw and Atlanta. Your lead helps directly.</p>
+      <a class="cta" href="#report">Report a nest (2 minutes)</a>
+    </div>
+    <div>
+      <img class="hero-photo" src="nest_photo.jpg" alt="A pale, ball-shaped yellow-legged hornet nest seen from above among tree branches" onerror="this.style.display='none'">
+      <p class="cap">A nest seen from our drone, October 2026.</p>
+    </div>
+  </div>
+</header>
+
+<section id="why">
+  <div class="wrap">
+    <h2>Why I am asking</h2>
+    <p class="lead">The yellow-legged hornet (<i>Vespa velutina</i>) is an invasive species first found in Georgia in 2023. It preys on honey bees and other pollinators. Its nests hang high in trees and are hard to spot from the ground, which is exactly the problem my thesis works on.</p>
+    <div class="cards">
+      <div class="card"><h3>1. You report a nest</h3><p>Address or map pin, and a photo if it is safe to take one. Name and contact details are optional but let me follow up.</p></div>
+      <div class="card"><h3>2. I get in touch first</h3><p>If the site fits the study I will contact you before anything happens. No one visits or flies without your permission.</p></div>
+      <div class="card"><h3>3. A short drone survey</h3><p>A few minutes of photographs from the air (normal and thermal). The images train and test the detector. Nothing is sprayed and the nest is not touched.</p></div>
+    </div>
+    <p class="note"><b>Please also report every sighting to the Georgia Department of Agriculture</b>, which handles removal:
+      <a href="https://agr.georgia.gov/yellow-legged-hornet" target="_blank" rel="noopener">agr.georgia.gov/yellow-legged-hornet</a>.
+      Not sure it is a yellow-legged hornet? Send the photo anyway.</p>
+  </div>
+</section>
+
+<section id="id">
+  <div class="wrap">
+    <h2>What to look for</h2>
+    <p class="lead">Quick identification, based on the Georgia Department of Agriculture description.</p>
+    <div class="cards">
+      <div class="card"><h3>The hornet</h3><p>Dark body, legs partly or mostly <b>yellow</b>, orange-yellow face. Smaller than the European hornet, which is larger with more yellow and brown on the body.</p></div>
+      <div class="card"><h3>The nest</h3><p>Egg-shaped paper nest with a shell-like outside. Softball to watermelon size in early summer, larger than a basketball by late summer and fall, usually <b>high in a tree</b>.</p></div>
+      <div class="card"><h3>Look-alikes</h3><p>Bald-faced hornets build grey nests too but are black and white. Paper wasps build small open combs under eaves. If in doubt, report it and we will check.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="where">
+  <div class="wrap">
+    <h2>Where we are looking</h2>
+    <p class="lead">We are collecting leads around Kennesaw State University's Marietta campus and the wider metro Atlanta area. Highlighted cities are our main focus; the others are also welcome.</p>
+    <div class="chips" id="cities"></div>
+    <p class="note">Not on the list but nearby? Report it anyway, the map below works for any address in Georgia.</p>
+  </div>
+</section>
+
+<section id="report">
+  <div class="wrap">
+    <h2>Report a nest</h2>
+    <p class="lead">Only the location is required. Everything else helps but is optional.</p>
+
+    <form id="f" novalidate>
+      <div class="row">
+        <div class="field">
+          <label for="name">Your name <small>(optional)</small></label>
+          <input type="text" id="name" name="name" autocomplete="name" placeholder="Jane Doe">
+        </div>
+        <div class="field">
+          <label for="contact">Phone or email <small>(optional, so I can reach you)</small></label>
+          <input type="text" id="contact" name="contact" autocomplete="email" placeholder="(770) 555-0100 or jane@example.com">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="seen">When did you see it? <small>(optional)</small></label>
+          <input type="date" id="seen" name="seen">
+        </div>
+        <div class="field">
+          <label for="notes">Anything else? <small>(optional)</small></label>
+          <input type="text" id="notes" name="notes" placeholder="e.g. top of an oak in the back yard, lots of hornets around a bee hive">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="photo">Photo of the nest or the hornet <small>(optional, only if safe to take)</small></label>
+        <div class="file">
+          <input type="file" id="photo" name="photo" accept="image/*" capture="environment">
+          <img id="preview" class="preview" alt="Preview of your photo">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="address">Where is the nest? <span class="req">*</span> <small>Type an address, then drag the pin to the exact tree if you can.</small></label>
+        <div class="addr">
+          <input type="text" id="address" name="address" autocomplete="street-address" placeholder="Street address or a nearby landmark, city, GA" required>
+          <button type="button" class="btn ghost" id="find">Find on map</button>
+          <button type="button" class="btn ghost" id="locate" title="Use my current location">📍</button>
+        </div>
+        <div id="map" role="application" aria-label="Map for placing the nest location"></div>
+        <div class="coords" id="coords">No pin yet. Type an address and press "Find on map", or click the map.</div>
+      </div>
+
+      <!-- spam trap: humans never see this -->
+      <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off">
+
+      <button type="submit" class="submit" id="send">Send report</button>
+      <div class="msg" id="msg"></div>
+      <p class="privacy">Your details are used only for this study, are stored in a private folder at the university, and are never shared or published. You can ask for them to be deleted at any time by emailing <a href="mailto:mareeb@students.kennesaw.edu">mareeb@students.kennesaw.edu</a>.</p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Muhammad Areeb · M.S. thesis, Kennesaw State University, Marietta campus<br>
+    Map © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © CARTO, imagery © Esri.
+  </div>
+</footer>
+
+<div class="contactbar" role="contentinfo" aria-label="Contact Muhammad Areeb">
+  <span class="who">Questions? Contact Muhammad Areeb</span>
+  <a class="cb" href="tel:+19432652618">📞 Call +1 (943) 265-2618</a>
+  <a class="cb" href="sms:+19432652618?&body=Hi%20Muhammad%2C%20I%20think%20I%20found%20a%20yellow-legged%20hornet%20nest%20at%20">💬 Text</a>
+  <a class="cb" href="mailto:mareeb@students.kennesaw.edu?subject=Yellow-legged%20hornet%20nest%20report">✉️ mareeb@students.kennesaw.edu</a>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"
+        integrity="sha512-BwHfrr4c9kmRkLw6iXFdzcdWV/PGkVgiIyIWLLlTSXzWQzxuSg4DiQUCpauz/EWjgk5TYQqX/kvn9pG1NpYfqg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+/* ============================ SETTINGS ============================
+   ENDPOINT: paste the Google Apps Script "Web app" URL here after deploying
+   apps_script.gs (see README). Leave it empty to run in LOCAL TEST MODE,
+   where the report is shown on the page instead of being sent anywhere.    */
+const ENDPOINT = "";
+const KSU_MARIETTA = [33.9393, -84.5198];      // map starts here
+const MAX_PHOTO_PX = 1600;                      // photos are shrunk before upload
+
+/* cities within roughly 1.5 h drive of the Marietta campus; "hot" = main focus */
+const CITIES = [
+  ["Marietta",1],["Kennesaw",1],["Atlanta",1],["Smyrna",1],["Acworth",1],["Woodstock",1],
+  ["Roswell",0],["Alpharetta",0],["Sandy Springs",0],["Dunwoody",0],["Powder Springs",0],["Austell",0],
+  ["Mableton",0],["Vinings",0],["Canton",0],["Cartersville",0],["Dallas",0],["Hiram",0],["Douglasville",0],
+  ["Decatur",0],["Brookhaven",0],["Chamblee",0],["Norcross",0],["Duluth",0],["Lawrenceville",0],
+  ["Cumming",0],["Johns Creek",0],["Peachtree City",0],["Newnan",0],["Carrollton",0],["Rome",0],
+  ["Calhoun",0],["Jasper",0],["Gainesville",0],["Conyers",0],["McDonough",0],["Griffin",0],["Athens",0]
+];
+/* ================================================================== */
+
+const $ = id => document.getElementById(id);
+const chips = $("cities");
+for (const [c, hot] of CITIES) {
+  const s = document.createElement("span");
+  s.className = "chip" + (hot ? " hot" : ""); s.textContent = c; chips.appendChild(s);
+}
+
+/* ---- map ---- */
+const map = L.map("map", {scrollWheelZoom: false}).setView(KSU_MARIETTA, 11);
+/* CARTO basemap (free, no key, works from file:// too) + Esri satellite for finding the exact tree */
+const streets = L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+  maxZoom: 20, subdomains: "abcd", attribution: "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> &copy; <a href='https://carto.com/attributions'>CARTO</a>"
+}).addTo(map);
+const satellite = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+  maxZoom: 19, attribution: "Imagery &copy; Esri, Maxar, Earthstar Geographics"
+});
+L.control.layers({"Map": streets, "Satellite": satellite}, null, {position: "topright"}).addTo(map);
+map.on("zoomend", () => { if (map.getZoom() >= 16 && !map.hasLayer(satellite) && !map._userPickedLayer) { map.removeLayer(streets); satellite.addTo(map); } });
+map.on("baselayerchange", () => { map._userPickedLayer = true; });
+let marker = null, pin = null, reverseTimer = null;
+
+function setPin(lat, lon, {pan = true, zoom = null, reverse = false} = {}) {
+  pin = {lat: +lat.toFixed(6), lon: +lon.toFixed(6)};
+  if (!marker) {
+    marker = L.marker([lat, lon], {draggable: true, autoPan: true}).addTo(map);
+    marker.on("dragend", () => { const p = marker.getLatLng(); setPin(p.lat, p.lng, {pan: false, reverse: true}); });
+  } else marker.setLatLng([lat, lon]);
+  if (pan) zoom ? map.setView([lat, lon], zoom) : map.panTo([lat, lon]);
+  $("coords").textContent = `Pin at ${pin.lat}, ${pin.lon}. Drag it onto the tree if you can.`;
+  if (reverse) {               // pin moved by hand -> refresh the address text (debounced)
+    clearTimeout(reverseTimer);
+    reverseTimer = setTimeout(() => reverseGeocode(lat, lon), 600);
+  }
+}
+map.on("click", e => setPin(e.latlng.lat, e.latlng.lng, {pan: false, reverse: true}));
+
+/* Nominatim (OpenStreetMap's free geocoder, no key). Usage policy: at most 1 request/s,
+   which a form like this never reaches. */
+async function geocode(q) {
+  const u = "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=us&viewbox=-85.6,35.0,-83.2,33.0&bounded=0&q=" + encodeURIComponent(q);
+  const r = await fetch(u, {headers: {"Accept": "application/json"}});
+  if (!r.ok) throw new Error("geocoder " + r.status);
+  const j = await r.json();
+  return j[0] ? {lat: +j[0].lat, lon: +j[0].lon, name: j[0].display_name} : null;
+}
+async function reverseGeocode(lat, lon) {
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`, {headers: {"Accept": "application/json"}});
+    const j = await r.json();
+    if (j && j.display_name) $("address").value = j.display_name;
+  } catch (e) { /* keep whatever the user typed */ }
+}
+async function findAddress() {
+  const q = $("address").value.trim();
+  if (!q) { $("address").focus(); return; }
+  $("find").disabled = true; $("find").textContent = "Searching…";
+  try {
+    const hit = await geocode(/georgia|,\s*ga\b/i.test(q) ? q : q + ", Georgia, USA");
+    if (!hit) { $("coords").textContent = "Address not found. Try adding the city, or click the spot on the map."; return; }
+    setPin(hit.lat, hit.lon, {zoom: 17});
+  } catch (e) {
+    $("coords").textContent = "Could not reach the map search. Click the spot on the map instead.";
+  } finally { $("find").disabled = false; $("find").textContent = "Find on map"; }
+}
+$("find").addEventListener("click", findAddress);
+$("address").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); findAddress(); } });
+$("locate").addEventListener("click", () => {
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(
+    p => setPin(p.coords.latitude, p.coords.longitude, {zoom: 17, reverse: true}),
+    () => { $("coords").textContent = "Location permission was refused. Type the address instead."; },
+    {enableHighAccuracy: true, timeout: 10000});
+});
+
+/* ---- photo preview + shrink ---- */
+let photoData = null;   // {name, type, base64}
+$("photo").addEventListener("change", async e => {
+  const f = e.target.files[0]; photoData = null; $("preview").style.display = "none";
+  if (!f) return;
+  const bmp = await createImageBitmap(f).catch(() => null);
+  if (!bmp) return;
+  const s = Math.min(1, MAX_PHOTO_PX / Math.max(bmp.width, bmp.height));
+  const c = document.createElement("canvas");
+  c.width = Math.round(bmp.width * s); c.height = Math.round(bmp.height * s);
+  c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+  const url = c.toDataURL("image/jpeg", 0.85);
+  photoData = {name: f.name.replace(/\.[^.]+$/, "") + ".jpg", type: "image/jpeg", base64: url.split(",")[1]};
+  $("preview").src = url; $("preview").style.display = "block";
+});
+
+/* ---- submit ---- */
+$("f").addEventListener("submit", async e => {
+  e.preventDefault();
+  const msg = $("msg"); msg.className = "msg";
+  if ($("f").website.value) return;                       // bot filled the hidden field
+  const address = $("address").value.trim();
+  if (!address) { msg.textContent = "Please enter the address of the nest."; msg.className = "msg bad"; $("address").focus(); return; }
+  if (!pin) {                                             // address typed but never placed: try once
+    await findAddress();
+    if (!pin) { msg.textContent = "Please place the pin on the map (press \"Find on map\" or click the spot)."; msg.className = "msg bad"; return; }
+  }
+  const report = {
+    submitted_at: new Date().toISOString(),
+    name: $("name").value.trim(), contact: $("contact").value.trim(),
+    seen_on: $("seen").value, notes: $("notes").value.trim(),
+    address, lat: pin.lat, lon: pin.lon,
+    maps_link: `https://www.google.com/maps?q=${pin.lat},${pin.lon}`,
+    photo: photoData, page: location.href
+  };
+  const btn = $("send"); btn.disabled = true; btn.textContent = "Sending…";
+  try {
+    if (!ENDPOINT) {                                      // local test mode
+      const shown = {...report, photo: photoData ? `${photoData.name} (${Math.round(photoData.base64.length * 3 / 4 / 1024)} KB)` : null};
+      msg.innerHTML = "<b>Local test mode</b> (no ENDPOINT set). This is what would be sent:<pre style='white-space:pre-wrap;font-size:.8rem;margin:8px 0 0'>" +
+        JSON.stringify(shown, null, 2).replace(/</g, "&lt;") + "</pre>";
+      msg.className = "msg ok";
+    } else {
+      // text/plain body = no CORS preflight, which is what Apps Script web apps need
+      const r = await fetch(ENDPOINT, {method: "POST", body: JSON.stringify(report)});
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || j.ok === false) throw new Error(j.error || ("server " + r.status));
+      msg.textContent = "Thank you! Your report was sent. I will be in touch if the site fits the study.";
+      msg.className = "msg ok";
+      $("f").reset(); $("preview").style.display = "none"; photoData = null;
+      if (marker) { map.removeLayer(marker); marker = null; } pin = null;
+      $("coords").textContent = "No pin yet.";
+    }
+  } catch (err) {
+    msg.textContent = "Sorry, sending failed (" + err.message + "). Please try again, or email the details to mareeb@students.kennesaw.edu.";
+    msg.className = "msg bad";
+  } finally { btn.disabled = false; btn.textContent = "Send report"; }
+});
+</script>
+</body>
+</html>
